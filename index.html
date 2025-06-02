@@ -320,10 +320,10 @@
       .chart-card-full-width {
         grid-column: 1 / -1;
       }
-      /* Styles for the new table */
+      /* Styles for the evolution table */
       .evolution-table-container {
-        margin-top: 1.5rem; /* Space between chart and table */
-        overflow-x: auto; /* For responsiveness on smaller screens */
+        margin-top: 1.5rem;
+        overflow-x: auto;
       }
       .evolution-table {
         width: 100%;
@@ -333,7 +333,7 @@
       .evolution-table th,
       .evolution-table td {
         padding: 0.75rem 1rem;
-        text-align: left;
+        text-align: center; /* Centralizado */
         border-bottom: 1px solid var(--card-border);
       }
       .evolution-table th {
@@ -349,12 +349,17 @@
       }
       .evolution-table td.currency,
       .evolution-table td.na-value {
-        text-align: right;
+        text-align: center; /* Centralizado */
       }
       .evolution-table td.na-value {
         color: var(--text-secondary);
         font-style: italic;
       }
+      .evolution-table tfoot tr.total-row-highlight td { /* Destaque para linha total */
+        background-color: rgba(35, 45, 60, 0.75);
+        font-weight: bold;
+      }
+
 
       .ranking-item {
         display: flex;
@@ -484,7 +489,7 @@
         font-size: 0.9rem;
         font-weight: 600;
         color: var(--text-secondary);
-        min-width: 40px;
+        min-width: 80px;
         text-align: right;
       }
 
@@ -560,13 +565,13 @@
         text-align: center;
       }
       .circular-progress-value {
-        font-size: 1rem; /* REDUCED FONT SIZE */
+        font-size: 1rem;
         font-weight: 700;
         color: var(--text-primary);
         line-height: 1;
       }
       .circular-progress-label {
-        font-size: 0.5rem; /* REDUCED FONT SIZE */
+        font-size: 0.5rem;
         color: var(--text-secondary);
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -838,7 +843,6 @@
           padding: 0.5rem;
         }
       }
-      /* Estilo para a primeira frase (pode ser adicionado na tag <style> se preferir) */
 .subtle-question {
   font-size: 0.8rem;
   color: var(--text-secondary);
@@ -991,20 +995,22 @@
                 <thead>
                     <tr>
                         <th>Mês</th>
-                        <th>Meta Mensal Adaptada</th>
                         <th>Faturamento Mensal Realizado</th>
-                        <th>Meta Ideal</th>
+                        <th>Meta Original</th>
+                        <th>Meta Mensal Adaptada</th>
                     </tr>
                 </thead>
                 <tbody id="evolutionTableBody">
-                    </tbody>
+                </tbody>
+                <tfoot id="evolutionTableFooter">
+                </tfoot>
             </table>
           </div>
           <div style="margin-top: 1rem; padding: 0 1rem;">
-            <p style="font-size: 0.8rem; color: var(--text-secondary); text-align: left; margin-bottom: 0.5rem;">
+            <p class="subtle-question">
               <em>O que são as Metas Adaptadas?</em>
             </p>
-            <p style="font-size: 0.9rem; color: var(--text-primary); text-align: left;">
+            <p class="action-prompt">
               O que precisamos fazer agora já que não batemos as metas nos meses passados.
             </p>
           </div>
@@ -1271,6 +1277,7 @@
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-01-18" },
         { closerId: "cfn", result: 0, numberOfSales: 0, date: "2024-12-01" },
         { closerId: "ba", result: 0, numberOfSales: 0, date: "2024-11-01" },
+        { closerId: "x", result: 141.670, numberOfSales: 5, date: "2025-01-18" },
       ];
 
       const ANNUAL_TARGET = 30000000;
@@ -1304,10 +1311,15 @@
       }
 
       function generateMonthlyTargetChartData() {
-        const annualTarget = ANNUAL_TARGET;
-        const currentYear = SIMULATED_CURRENT_DATE.getFullYear();
-        const labels = [];
+        const annualTarget = ANNUAL_TARGET; // Keep for consistency, though not used for new static arrays
+        const currentYear = SIMULATED_CURRENT_DATE.getFullYear(); // Keep for consistency
 
+        const labels = [];
+        for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+          labels.push(monthNamesPt[monthIndex]);
+        }
+
+        // Meta Adaptada (User request matches current values for Jun-Dec, Jan-May are null)
         const monthlyTargetsData = [
           null, // Janeiro (N/A)
           null, // Fevereiro (N/A)
@@ -1319,43 +1331,42 @@
           2572194.39, // Agosto
           2929831.47, // Setembro
           4346363.61, // Outubro
-          820533.55, // Novembro
-          2841998.57, // Dezembro
+          820533.55,  // Novembro
+          2841998.57  // Dezembro
         ];
 
-        const actualRevenueData = [];
+        // Faturamento Mensal Realizado - Updated with new values
+        const actualRevenueData = [
+          1221372.75, // Janeiro
+          1278052.78, // Fevereiro
+          1160106.72, // Março
+          757023.77,  // Abril
+          1234228.37, // Maio
+          0,            // Junho (assuming 0 as no new value provided and original data suggests 0 for future)
+          0,            // Julho
+          0,            // Agosto
+          0,            // Setembro
+          0,            // Outubro
+          0,            // Novembro
+          0             // Dezembro
+        ];
+
+        // Meta Original - Updated with new values
         const idealPaceData = [
-          1479000.0, // Janeiro
-          630000.0, // Fevereiro
-          2270505.0, // Março
-          1108068.0, // Abril
-          1830000.0, // Maio
-          2009565.0, // Junho
-          4500034.89, // Julho
-          3288150.0, // Agosto
-          2667480.0, // Setembro
-          3868830.0, // Outubro
-          3708231.0, // Novembro
-          5590257.18, // Dezembro
+          1470000.00, // Janeiro
+          820000.00,  // Fevereiro
+          2210505.00, // Março
+          1180860.00, // Abril
+          2280080.00, // Maio
+          2089560.00, // Junho
+          4580011.49, // Julho
+          2289150.00, // Agosto
+          2607480.00, // Setembro
+          3868500.00, // Outubro
+          730221.00,  // Novembro
+          2529257.18  // Dezembro
         ];
-
-        let revenueAccumulatedPriorMonths = 0;
-        for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
-          labels.push(monthNamesPt[monthIndex]);
-
-          let revenueThisMonth = 0;
-          rawSalesData.forEach((sale) => {
-            const saleDate = new Date(sale.date);
-            if (
-              saleDate.getFullYear() === currentYear &&
-              saleDate.getMonth() === monthIndex
-            ) {
-              revenueThisMonth += sale.result;
-            }
-          });
-          actualRevenueData.push(revenueThisMonth);
-          revenueAccumulatedPriorMonths += revenueThisMonth;
-        }
+        
         return { labels, monthlyTargetsData, actualRevenueData, idealPaceData };
       }
 
@@ -1393,7 +1404,7 @@
                 pointHoverRadius: 6,
               },
               {
-                label: "Meta Ideal",
+                label: "Meta Original",
                 data: chartData.idealPaceData,
                 borderColor: "rgba(150, 150, 150, 0.7)",
                 backgroundColor: "rgba(150, 150, 150, 0.1)",
@@ -1471,7 +1482,7 @@
                     if (
                       datasetLabel === "Meta Mensal Adaptada" ||
                       datasetLabel === "Faturamento Mensal Realizado" ||
-                      datasetLabel === "Meta Ideal"
+                      datasetLabel === "Meta Original"
                     ) {
                       return "#FFFFFF";
                     }
@@ -1507,7 +1518,13 @@
 
       function renderEvolutionTable(chartData) {
         const tableBody = document.getElementById("evolutionTableBody");
-        tableBody.innerHTML = ""; // Clear previous rows
+        const tableFooter = document.getElementById("evolutionTableFooter");
+        tableBody.innerHTML = "";
+        tableFooter.innerHTML = "";
+
+        let totalActualRevenue = 0;
+        let totalIdealPace = 0;
+        let totalMonthlyTargets = 0;
 
         for (let i = 0; i < chartData.labels.length; i++) {
           const row = tableBody.insertRow();
@@ -1515,24 +1532,48 @@
           const cellMonth = row.insertCell();
           cellMonth.textContent = chartData.labels[i];
 
+          const cellActual = row.insertCell();
+          cellActual.textContent = formatCurrency(
+            chartData.actualRevenueData[i]
+          );
+          cellActual.className = "currency";
+          totalActualRevenue += chartData.actualRevenueData[i] || 0;
+
+          const cellIdeal = row.insertCell();
+          cellIdeal.textContent = formatCurrency(chartData.idealPaceData[i]);
+          cellIdeal.className = "currency";
+          totalIdealPace += chartData.idealPaceData[i] || 0;
+          
           const cellTarget = row.insertCell();
           cellTarget.textContent = formatCurrency(
             chartData.monthlyTargetsData[i]
           );
           cellTarget.className =
             chartData.monthlyTargetsData[i] === null ? "na-value" : "currency";
-
-          const cellActual = row.insertCell();
-          cellActual.textContent = formatCurrency(
-            chartData.actualRevenueData[i]
-          );
-          cellActual.className = "currency";
-
-          const cellIdeal = row.insertCell();
-          cellIdeal.textContent = formatCurrency(chartData.idealPaceData[i]);
-          cellIdeal.className = "currency";
+          if (chartData.monthlyTargetsData[i] !== null) {
+            totalMonthlyTargets += chartData.monthlyTargetsData[i];
+          }
         }
+
+        const totalRow = tableFooter.insertRow();
+        totalRow.className = "total-row-highlight"; // Aplicando a classe de destaque
+
+        const cellTotalLabel = totalRow.insertCell();
+        cellTotalLabel.textContent = "Total";
+
+        const cellTotalActualRevenue = totalRow.insertCell();
+        cellTotalActualRevenue.textContent = formatCurrency(totalActualRevenue);
+        cellTotalActualRevenue.className = "currency";
+
+        const cellTotalIdealPace = totalRow.insertCell();
+        cellTotalIdealPace.textContent = formatCurrency(totalIdealPace);
+        cellTotalIdealPace.className = "currency";
+
+        const cellTotalMonthlyTarget = totalRow.insertCell();
+        cellTotalMonthlyTarget.textContent = formatCurrency(totalMonthlyTargets);
+        cellTotalMonthlyTarget.className = "currency";
       }
+
 
       function populateDateFilter() {
         const filterSelect = document.getElementById("dateFilter");
@@ -1607,6 +1648,7 @@
             maxResultInPeriod = 0;
           }
         }
+
         return closersArray
           .map((closer) => ({
             ...closer,
@@ -1616,7 +1658,7 @@
               closer.totalNumberOfSales > 0
                 ? closer.totalResult / closer.totalNumberOfSales
                 : 0,
-            percentage:
+            percentageForBar:
               maxResultInPeriod > 0
                 ? Math.round((closer.totalResult / maxResultInPeriod) * 100)
                 : 0,
@@ -1711,11 +1753,11 @@
           }" /></div><div class="closer-info"><div class="closer-name">${
             closer.name
           }</div><div class="progress-wrapper"><div class="progress-container"><div class="progress-bar" style="width: ${Math.min(
-            closer.percentage,
+            closer.percentageForBar,
             100
           )}%"></div></div><span class="percentage">${
-            closer.percentage
-          }%</span></div></div>`;
+            formatCurrency(closer.result)
+          }</span></div></div>`;
           container.appendChild(rankingItem);
         });
       }
@@ -1751,6 +1793,8 @@
         const infoDiv = document.getElementById("selectedCloserInfo");
         const photoDiv = document.getElementById("selectedPhoto");
         const noDataMsg = document.getElementById("noIndividualDataMessage");
+        const performanceLabelEl = document.getElementById("individualPerformanceLabel");
+
 
         if (valueAnimationId) {
           cancelAnimationFrame(valueAnimationId);
@@ -1764,6 +1808,13 @@
           noDataMsg.style.display = "block";
           document.getElementById("individualPerformanceValue").textContent =
             formatCurrency(0);
+          if(performanceLabelEl) performanceLabelEl.textContent = "Faturamento";
+          const circleFillReset = document.getElementById("individualPerformanceCircleFill");
+          if (circleFillReset) {
+            const radiusReset = parseFloat(circleFillReset.getAttribute("r"));
+            const circumferenceReset = 2 * Math.PI * radiusReset;
+            circleFillReset.style.strokeDashoffset = circumferenceReset;
+          }
           return;
         }
 
@@ -1779,32 +1830,43 @@
         document.getElementById("averageTicketValue").textContent =
           formatCurrency(closer.averageTicket);
 
-        const top1Performer =
-          dataForPeriod.length > 0 && dataForPeriod[0].result > 0
-            ? dataForPeriod[0]
-            : null;
-        const top1Result = top1Performer ? top1Performer.result : 0;
         const selectedCloserResult = closer.result;
 
+        const top1PerformerThisPeriod = (dataForPeriod && dataForPeriod.length > 0 && dataForPeriod[0].result > 0) ? dataForPeriod[0] : null;
+
         let progressRatio = 0;
-        if (top1Result > 0) {
-          progressRatio = selectedCloserResult / top1Result;
-        } else if (selectedCloserResult > 0) {
-          progressRatio = 1;
+        let labelText = "Faturamento";
+
+        if (top1PerformerThisPeriod && closer.closerId === top1PerformerThisPeriod.closerId) {
+            progressRatio = 1;
+            labelText = "Top 1 Performance";
+        } else {
+            const numberOfClosers = Object.keys(closersInfo).length;
+            const averageMonthlyTargetPerCloser = (numberOfClosers > 0 && ANNUAL_TARGET > 0) ? (ANNUAL_TARGET / numberOfClosers / 12) : 0;
+
+            if (averageMonthlyTargetPerCloser > 0) {
+                progressRatio = selectedCloserResult / averageMonthlyTargetPerCloser;
+            }
         }
         progressRatio = Math.min(Math.max(progressRatio, 0), 1);
+
+        if(performanceLabelEl) performanceLabelEl.textContent = labelText;
+
 
         const circleFill = document.getElementById(
           "individualPerformanceCircleFill"
         );
-        const radius = parseFloat(circleFill.getAttribute("r"));
-        const circumference = 2 * Math.PI * radius;
-        const offset = circumference * (1 - progressRatio);
+        if (circleFill) {
+            const radius = parseFloat(circleFill.getAttribute("r"));
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference * (1 - progressRatio);
 
-        circleFill.style.strokeDasharray = circumference;
-        requestAnimationFrame(() => {
-          circleFill.style.strokeDashoffset = offset;
-        });
+            circleFill.style.strokeDasharray = circumference;
+            requestAnimationFrame(() => {
+              circleFill.style.strokeDashoffset = offset;
+            });
+        }
+
 
         const valueElement = document.getElementById(
           "individualPerformanceValue"
@@ -1820,35 +1882,18 @@
           const progress = Math.min(elapsedTime / animationDuration, 1);
           const currentValue = startValue + (endValue - startValue) * progress;
 
-          valueElement.textContent = formatCurrency(currentValue);
+          if (valueElement) valueElement.textContent = formatCurrency(currentValue);
 
           if (progress < 1) {
             valueAnimationId = requestAnimationFrame(step);
           } else {
-            valueElement.textContent = formatCurrency(endValue);
+            if (valueElement) valueElement.textContent = formatCurrency(endValue);
             valueAnimationId = null;
           }
         }
         valueAnimationId = requestAnimationFrame(step);
-
-        let labelText = "Faturamento";
-        if (
-          selectedCloserResult === 0 &&
-          (!top1Performer || top1Result === 0)
-        ) {
-          labelText = "Sem faturamento";
-        } else if (top1Performer) {
-          if (closer.closerId === top1Performer.closerId) {
-            labelText = "Top 1 Performance";
-          } else {
-            labelText = `de ${formatCurrency(top1Result)} (Top 1)`;
-          }
-        } else if (selectedCloserResult > 0) {
-          labelText = "Único com Faturamento";
-        }
-        document.getElementById("individualPerformanceLabel").textContent =
-          labelText;
       }
+
 
       function clearIndividualView() {
         if (valueAnimationId) {
@@ -1856,12 +1901,18 @@
           valueAnimationId = null;
         }
 
-        document.getElementById("selectedCloserInfo").style.display = "none";
-        document.getElementById("noIndividualDataMessage").style.display =
-          "block";
-        document.getElementById("noIndividualDataMessage").textContent =
-          "Selecione um closer para ver os detalhes.";
-        document.getElementById("closerSelect").value = "";
+        const selectedCloserInfoDiv = document.getElementById("selectedCloserInfo");
+        if (selectedCloserInfoDiv) selectedCloserInfoDiv.style.display = "none";
+
+        const noIndividualDataMsg = document.getElementById("noIndividualDataMessage");
+        if (noIndividualDataMsg) {
+            noIndividualDataMsg.style.display = "block";
+            noIndividualDataMsg.textContent = "Selecione um closer para ver os detalhes.";
+        }
+
+        const closerSelectDropdown = document.getElementById("closerSelect");
+        if (closerSelectDropdown) closerSelectDropdown.value = "";
+
 
         const circleFill = document.getElementById(
           "individualPerformanceCircleFill"
@@ -1869,16 +1920,18 @@
         if (circleFill) {
           const radius = parseFloat(circleFill.getAttribute("r"));
           const circumference = 2 * Math.PI * radius;
+          const originalTransition = circleFill.style.transition;
           circleFill.style.transition = "none";
           circleFill.style.strokeDashoffset = circumference;
           circleFill.offsetHeight;
-          circleFill.style.transition =
-            "stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1)";
+          circleFill.style.transition = originalTransition || "stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1)";
         }
+
         const valueText = document.getElementById("individualPerformanceValue");
         if (valueText) valueText.textContent = formatCurrency(0);
-        const labelText = document.getElementById("individualPerformanceLabel");
-        if (labelText) labelText.textContent = "Faturamento";
+
+        const labelTextEl = document.getElementById("individualPerformanceLabel");
+        if (labelTextEl) labelTextEl.textContent = "Faturamento";
 
         const selectedPhotoDiv = document.getElementById("selectedPhoto");
         if (selectedPhotoDiv) selectedPhotoDiv.innerHTML = "";
@@ -1901,19 +1954,23 @@
 
         const evolutionChartData = generateMonthlyTargetChartData();
         renderMonthlyTargetChart(evolutionChartData);
-        renderEvolutionTable(evolutionChartData); // Call the new function here
+        renderEvolutionTable(evolutionChartData);
 
         generatePodium(currentProcessedData);
         generateRanking(currentProcessedData);
         populateDropdown(currentProcessedData);
         const selectedCloserId = document.getElementById("closerSelect").value;
-        if (
-          selectedCloserId &&
-          currentProcessedData.find((c) => c.closerId === selectedCloserId)
-        ) {
+
+        const closerStillExistsInPeriod = currentProcessedData.find(c => c.closerId === selectedCloserId);
+
+        if (selectedCloserId && closerStillExistsInPeriod) {
           updateIndividualView(selectedCloserId, currentProcessedData);
         } else {
           clearIndividualView();
+          if(selectedCloserId && !closerStillExistsInPeriod && document.getElementById("noIndividualDataMessage")) {
+             document.getElementById("noIndividualDataMessage").textContent =
+            "O closer anteriormente selecionado não possui dados para este período.";
+          }
         }
       }
 
