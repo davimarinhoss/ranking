@@ -10,6 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       :root {
         --bg-gradient-start: #0f1419;
@@ -260,13 +261,19 @@
         margin: 0 auto;
       }
 
-      /* DASHBOARD GRID & CARDS - RESTORED */
       .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
         gap: 2.5rem;
         margin-bottom: 2rem;
+        grid-template-columns: 1fr;
       }
+
+      @media (min-width: 840px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
       .card {
         background: var(--card-bg);
         backdrop-filter: blur(12px);
@@ -310,7 +317,10 @@
         border-radius: 3px;
       }
 
-      /* RANKING ITEM */
+      .chart-card-full-width {
+        grid-column: 1 / -1;
+      }
+
       .ranking-item {
         display: flex;
         align-items: center;
@@ -443,7 +453,6 @@
         text-align: right;
       }
 
-      /* INDIVIDUAL PERFORMANCE SECTION */
       .individual-section {
         text-align: center;
         flex-grow: 1;
@@ -490,7 +499,6 @@
         object-fit: cover;
         border-radius: 50%;
       }
-
       .selected-name {
         font-size: 1.3rem;
         font-weight: 600;
@@ -579,7 +587,6 @@
         font-size: 0.85rem;
         color: var(--text-secondary);
       }
-
       .empty-data-message {
         text-align: center;
         color: var(--text-secondary);
@@ -618,10 +625,6 @@
       }
 
       @media (max-width: 992px) {
-        .dashboard-grid {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-        }
         .podium-container {
           flex-direction: column;
           align-items: center;
@@ -669,7 +672,7 @@
           width: 100%;
         }
       }
-      @media (max-width: 768px) {
+      @media (max-width: 839px) {
         .header h1 {
           font-size: 2.2rem;
         }
@@ -911,6 +914,18 @@
             </div>
           </div>
         </div>
+
+        <div class="card chart-card-full-width">
+          <h2 class="card-title">
+            <span class="icon">📈</span> Evolução: Meta Mensal vs Faturamento
+          </h2>
+          <div
+            class="chart-container"
+            style="position: relative; height: 350px; width: 100%"
+          >
+            <canvas id="monthlyTargetEvolutionChart"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -976,23 +991,14 @@
       };
 
       let rawSalesData = [
-        // June 2025 (Current Month for simulation)
         { closerId: "cfn", result: 0, numberOfSales: 0, date: "2025-06-10" },
-
         { closerId: "ba", result: 0, numberOfSales: 0, date: "2025-06-05" },
-
         { closerId: "gm", result: 0, numberOfSales: 0, date: "2025-06-15" },
-
         { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-06-12" },
-
         { closerId: "mc", result: 0, numberOfSales: 0, date: "2025-06-05" },
         { closerId: "ya", result: 0, numberOfSales: 0, date: "2025-06-10" },
-
         { closerId: "jas", result: 0, numberOfSales: 0, date: "2025-06-10" },
-
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-06-18" },
-
-        // May 2025
         {
           closerId: "cfn",
           result: 174184.12,
@@ -1030,27 +1036,21 @@
           numberOfSales: 1,
           date: "2025-05-10",
         },
-        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-05-18" }, // ADDED 3rd for March
-
-        // April 2025
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-05-18" },
         {
           closerId: "cfn",
           result: 66748.0,
           numberOfSales: 2,
           date: "2025-04-10",
         },
-
         { closerId: "ba", result: 0, numberOfSales: 0, date: "2025-04-05" },
-
         {
           closerId: "gm",
           result: 258053.25,
           numberOfSales: 7,
           date: "2025-04-15",
         },
-
         { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-04-12" },
-
         {
           closerId: "mc",
           result: 30000.0,
@@ -1063,88 +1063,70 @@
           numberOfSales: 3,
           date: "2025-04-10",
         },
-
         {
           closerId: "jas",
           result: 50000.0,
           numberOfSales: 1,
           date: "2025-04-10",
         },
-
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-04-18" },
-
-        // March 2025
         {
           closerId: "cfn",
           result: 190295.72,
           numberOfSales: 2,
           date: "2025-03-10",
         },
-
         {
           closerId: "ba",
           result: 30000.0,
           numberOfSales: 1,
           date: "2025-03-05",
         },
-
         {
           closerId: "gm",
           result: 248230.0,
           numberOfSales: 8,
           date: "2025-03-15",
         },
-
         { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-03-12" },
-
         {
           closerId: "mc",
           result: 243711.0,
           numberOfSales: 6,
           date: "2025-03-05",
         },
-
         {
           closerId: "ya",
           result: 169435.0,
           numberOfSales: 5,
           date: "2025-03-10",
         },
-
         {
           closerId: "jas",
           result: 110000.0,
           numberOfSales: 2,
           date: "2025-03-10",
         },
-
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-03-18" },
-        // ADDED 3rd for March
-
-        // February 2025
         {
           closerId: "cfn",
           result: 243417.78,
           numberOfSales: 6,
           date: "2025-02-10",
         },
-
         {
           closerId: "ba",
           result: 31965.0,
           numberOfSales: 1,
           date: "2025-02-05",
         },
-
         {
           closerId: "gm",
           result: 98435.0,
           numberOfSales: 3,
           date: "2025-02-15",
         },
-
         { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-02-12" },
-
         {
           closerId: "mc",
           result: 114580.0,
@@ -1157,41 +1139,32 @@
           numberOfSales: 7,
           date: "2025-02-10",
         },
-
         {
           closerId: "jas",
           result: 135000.0,
           numberOfSales: 1,
           date: "2025-02-10",
         },
-
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-02-18" },
-        // ADDED 3rd for February
-
-        // January 2025
         {
           closerId: "cfn",
           result: 188632.75,
           numberOfSales: 4,
           date: "2025-01-10",
         },
-
         {
           closerId: "ba",
           result: 108435.0,
           numberOfSales: 3,
           date: "2025-01-05",
         },
-
         {
           closerId: "gm",
           result: 155200.0,
           numberOfSales: 3,
           date: "2025-01-15",
         },
-
         { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-01-12" },
-
         {
           closerId: "mc",
           result: 64000.0,
@@ -1204,32 +1177,18 @@
           numberOfSales: 2,
           date: "2025-01-10",
         },
-
         {
           closerId: "jas",
           result: 500000.0,
           numberOfSales: 1,
           date: "2025-01-10",
         },
-
         { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-01-18" },
-        // ADDED 3rd for January
-
-        // Older data
-        {
-          closerId: "cfn",
-          result: 0,
-          numberOfSales: 0,
-          date: "2024-12-01",
-        },
-        {
-          closerId: "ba",
-          result: 0,
-          numberOfSales: 0,
-          date: "2024-11-01",
-        },
+        { closerId: "cfn", result: 0, numberOfSales: 0, date: "2024-12-01" },
+        { closerId: "ba", result: 0, numberOfSales: 0, date: "2024-11-01" },
       ];
 
+      const ANNUAL_TARGET = 30000000;
       rawSalesData = rawSalesData.filter((sale) => closersInfo[sale.closerId]);
 
       const monthNamesPt = [
@@ -1247,12 +1206,160 @@
         "Dezembro",
       ];
       const SIMULATED_CURRENT_DATE = new Date(2025, 5, 2);
+      let monthlyTargetChartInstance = null;
 
       function formatCurrency(value) {
         return value.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
           minimumFractionDigits: 0,
+        });
+      }
+
+      function generateMonthlyTargetChartData() {
+        const annualTarget = ANNUAL_TARGET;
+        const currentYear = SIMULATED_CURRENT_DATE.getFullYear();
+        const labels = [];
+        const monthlyTargetsData = [];
+        const actualRevenueData = [];
+        const idealPaceData = [];
+        let revenueAccumulatedPriorMonths = 0;
+        for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+          labels.push(monthNamesPt[monthIndex]);
+          idealPaceData.push(annualTarget / 12);
+          const mesesRestantesNoAno = 12 - monthIndex;
+          let metaDoMes;
+          if (mesesRestantesNoAno > 0) {
+            metaDoMes =
+              (annualTarget - revenueAccumulatedPriorMonths) /
+              mesesRestantesNoAno;
+          } else {
+            metaDoMes = annualTarget - revenueAccumulatedPriorMonths;
+          }
+          monthlyTargetsData.push(Math.max(0, metaDoMes));
+          let revenueThisMonth = 0;
+          rawSalesData.forEach((sale) => {
+            const saleDate = new Date(sale.date);
+            if (
+              saleDate.getFullYear() === currentYear &&
+              saleDate.getMonth() === monthIndex
+            ) {
+              revenueThisMonth += sale.result;
+            }
+          });
+          actualRevenueData.push(revenueThisMonth);
+          revenueAccumulatedPriorMonths += revenueThisMonth;
+        }
+        return { labels, monthlyTargetsData, actualRevenueData, idealPaceData };
+      }
+
+      function renderMonthlyTargetChart(chartData) {
+        const ctx = document
+          .getElementById("monthlyTargetEvolutionChart")
+          .getContext("2d");
+        if (monthlyTargetChartInstance) {
+          monthlyTargetChartInstance.destroy();
+        }
+        monthlyTargetChartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: chartData.labels,
+            datasets: [
+              {
+                label: "Meta Mensal Dinâmica (para 30M)",
+                data: chartData.monthlyTargetsData,
+                borderColor: "rgba(255, 159, 64, 1)",
+                backgroundColor: "rgba(255, 159, 64, 0.2)",
+                fill: false,
+                tension: 0.1,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+              },
+              {
+                label: "Faturamento Mensal Realizado",
+                data: chartData.actualRevenueData,
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                fill: false,
+                tension: 0.1,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+              },
+              {
+                label: "Ritmo Ideal (30M/12)",
+                data: chartData.idealPaceData,
+                borderColor: "rgba(150, 150, 150, 0.7)",
+                backgroundColor: "rgba(150, 150, 150, 0.1)",
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.1,
+                pointRadius: 2,
+                pointHoverRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Faturamento (R$)",
+                  color: "#FFFFFF", // Changed to white
+                  font: { size: 14 },
+                },
+                ticks: {
+                  callback: function (value) {
+                    return formatCurrency(value);
+                  },
+                  color: "#FFFFFF", // Changed to white
+                },
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Mês",
+                  color: "#FFFFFF", // Changed to white
+                  font: { size: 14 },
+                },
+                ticks: {
+                  color: "#FFFFFF", // Changed to white
+                },
+                grid: {
+                  color: "rgba(255, 255, 255, 0.05)",
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#FFFFFF", // Changed to white
+                },
+              },
+              tooltip: {
+                backgroundColor: "rgba(0,0,0,0.8)",
+                titleColor: "var(--text-primary)",
+                bodyColor: "var(--text-secondary)",
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += formatCurrency(context.parsed.y);
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
         });
       }
 
@@ -1373,16 +1480,13 @@
           if (!closerData) return null;
           const podiumItem = document.createElement("div");
           podiumItem.className = `podium-item ${placeClass}`;
-          podiumItem.innerHTML = `
-                <div class="podium-closer-photo">
-                    <img src="${closerData.imageUrl}" alt="Foto de ${
+          podiumItem.innerHTML = `<div class="podium-closer-photo"><img src="${
+            closerData.imageUrl
+          }" alt="Foto de ${
             closerData.name
-          }" />
-                </div> 
-                <div class="rank">${rankText}</div>
-                <div class="name">${closerData.name}</div>
-                <div class="sales">${formatCurrency(closerData.result)}</div>
-            `;
+          }" /></div> <div class="rank">${rankText}</div><div class="name">${
+            closerData.name
+          }</div><div class="sales">${formatCurrency(closerData.result)}</div>`;
           return podiumItem;
         };
         let item2nd = null,
@@ -1409,13 +1513,10 @@
           container.innerHTML = `<p class="empty-data-message">Nenhum closer no ranking para o período selecionado.</p>`;
           return;
         }
-
         let displayRankCounter = 0;
         let previousResult = -Infinity;
         let previousSalesCount = -Infinity;
         const closersWithRank = data.map((closer, index) => {
-          // This ranking logic assigns a new rank number if result or sales count differs from the previous closer in the sorted list.
-          // It ensures ties in result (and then sales count) get the same rank number based on the first person achieving that score.
           if (
             closer.result !== previousResult ||
             closer.numberOfSales !== previousSalesCount
@@ -1426,28 +1527,24 @@
           previousSalesCount = closer.numberOfSales;
           return { ...closer, displayRank: displayRankCounter };
         });
-
         closersWithRank.forEach((closer) => {
           const isTop1 = closer.displayRank === 1 && closer.result > 0;
           const rankingItem = document.createElement("div");
           rankingItem.className = `ranking-item ${isTop1 ? "top-1" : ""}`;
-          rankingItem.innerHTML = `
-            <div class="ranking-position">${closer.displayRank}</div>
-            <div class="closer-photo">
-                <img src="${closer.imageUrl}" alt="Foto de ${closer.name}" />
-            </div>
-            <div class="closer-info">
-                <div class="closer-name">${closer.name}</div>
-                <div class="progress-wrapper">
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${Math.min(
-                          closer.percentage,
-                          100
-                        )}%"></div>
-                    </div>
-                    <span class="percentage">${closer.percentage}%</span>
-                </div>
-            </div>`;
+          rankingItem.innerHTML = `<div class="ranking-position">${
+            closer.displayRank
+          }</div><div class="closer-photo"><img src="${
+            closer.imageUrl
+          }" alt="Foto de ${
+            closer.name
+          }" /></div><div class="closer-info"><div class="closer-name">${
+            closer.name
+          }</div><div class="progress-wrapper"><div class="progress-container"><div class="progress-bar" style="width: ${Math.min(
+            closer.percentage,
+            100
+          )}%"></div></div><span class="percentage">${
+            closer.percentage
+          }%</span></div></div>`;
           container.appendChild(rankingItem);
         });
       }
@@ -1484,7 +1581,6 @@
         const infoDiv = document.getElementById("selectedCloserInfo");
         const photoDiv = document.getElementById("selectedPhoto");
         const noDataMsg = document.getElementById("noIndividualDataMessage");
-
         if (!closer) {
           infoDiv.style.display = "none";
           noDataMsg.textContent =
@@ -1495,7 +1591,6 @@
         }
         noDataMsg.style.display = "none";
         infoDiv.style.display = "flex";
-
         photoDiv.innerHTML = `<img src="${closer.imageUrl}" alt="Foto de ${closer.name}" />`;
         document.getElementById("selectedName").textContent = closer.name;
         document.getElementById("currentResult").textContent = formatCurrency(
@@ -1507,7 +1602,6 @@
           formatCurrency(closer.averageTicket);
         document.getElementById("gaugeLabel").textContent =
           "Em Relação ao Top 1";
-
         const gaugeFillSvg = document.getElementById("gaugeFillSvg");
         const gaugePercentageValue = document.getElementById(
           "gaugePercentageValue"
@@ -1527,9 +1621,9 @@
           gaugePercentageValue.textContent = `0%`;
           gaugeFillSvg.style.strokeDashoffset = totalPathLength;
         } else {
-          const duration = 1500;
-          const frameDuration = 20;
-          const totalFrames = duration / frameDuration;
+          const duration = 1500,
+            frameDuration = 20,
+            totalFrames = duration / frameDuration;
           const increment = targetPerc / totalFrames;
           if (targetPerc === 0) {
             gaugePercentageValue.textContent = `0%`;
@@ -1564,6 +1658,10 @@
       function refreshDashboard() {
         const filterValue = document.getElementById("dateFilter").value;
         const currentProcessedData = getProcessedData(filterValue);
+
+        const evolutionChartData = generateMonthlyTargetChartData();
+        renderMonthlyTargetChart(evolutionChartData);
+
         generatePodium(currentProcessedData);
         generateRanking(currentProcessedData);
         populateDropdown(currentProcessedData);
@@ -1581,6 +1679,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         populateDateFilter();
         refreshDashboard();
+
         document
           .getElementById("dateFilter")
           .addEventListener("change", refreshDashboard);
