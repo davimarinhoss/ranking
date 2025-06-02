@@ -320,6 +320,41 @@
       .chart-card-full-width {
         grid-column: 1 / -1;
       }
+      /* Styles for the new table */
+      .evolution-table-container {
+        margin-top: 1.5rem; /* Space between chart and table */
+        overflow-x: auto; /* For responsiveness on smaller screens */
+      }
+      .evolution-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      .evolution-table th,
+      .evolution-table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--card-border);
+      }
+      .evolution-table th {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: var(--text-secondary);
+        font-weight: 600;
+      }
+      .evolution-table td {
+        color: var(--text-primary);
+      }
+      .evolution-table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+      .evolution-table td.currency,
+      .evolution-table td.na-value {
+        text-align: right;
+      }
+      .evolution-table td.na-value {
+        color: var(--text-secondary);
+        font-style: italic;
+      }
 
       .ranking-item {
         display: flex;
@@ -506,51 +541,45 @@
         color: var(--text-primary);
       }
 
-      .gauge-container {
+      .circular-progress-display {
         position: relative;
-        width: 200px;
-        height: 100px;
-        margin: 1.5rem auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 180px;
+        height: 180px;
+        margin: 1rem auto 1.5rem auto;
       }
-      .gauge-container svg {
+      .circular-progress-display svg {
         width: 100%;
         height: 100%;
-        overflow: visible;
+        display: block;
       }
-      .gauge-track,
-      .gauge-fill-animated {
-        fill: none;
-        stroke-width: 16;
-        stroke-linecap: round;
-      }
-      .gauge-track {
-        stroke: rgba(0, 0, 0, 0.3);
-      }
-      .gauge-fill-animated {
-        stroke: url(#gaugeGradient);
-        transition: stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1);
-      }
-      .gauge-text-wrapper {
+      .circular-progress-text-wrapper {
         position: absolute;
-        top: 60%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
       }
-      .gauge-percentage-value {
-        font-size: 2.2rem;
+      .circular-progress-value {
+        font-size: 1rem; /* REDUCED FONT SIZE */
         font-weight: 700;
         color: var(--text-primary);
         line-height: 1;
       }
-      .gauge-label {
-        font-size: 0.8rem;
+      .circular-progress-label {
+        font-size: 0.5rem; /* REDUCED FONT SIZE */
         color: var(--text-secondary);
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-top: 4px;
+      }
+      .circular-progress-track {
+        fill: none;
+        stroke: rgba(0, 0, 0, 0.3);
+      }
+      .circular-progress-fill {
+        fill: none;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1);
       }
 
       .stats-grid {
@@ -558,7 +587,6 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
         margin-top: 1.5rem;
-        width: 100%;
         max-width: 420px;
         margin-left: auto;
         margin-right: auto;
@@ -689,15 +717,15 @@
         .card-title {
           font-size: 1.4rem;
         }
-        .gauge-container {
-          width: 180px;
-          height: 90px;
+        .circular-progress-display {
+          width: 160px;
+          height: 160px;
         }
-        .gauge-text-wrapper {
-          top: 58%;
+        .circular-progress-value {
+          font-size: 1.4rem;
         }
-        .gauge-percentage-value {
-          font-size: 1.8rem;
+        .circular-progress-label {
+          font-size: 0.65rem;
         }
         .stats-grid {
           gap: 0.75rem;
@@ -757,19 +785,15 @@
         .selected-name {
           font-size: 1.1rem;
         }
-        .gauge-container {
-          width: 160px;
-          height: 80px;
+        .circular-progress-display {
+          width: 130px;
+          height: 130px;
         }
-        .gauge-track,
-        .gauge-fill-animated {
-          stroke-width: 14;
+        .circular-progress-value {
+          font-size: 1.2rem;
         }
-        .gauge-text-wrapper {
-          top: 56%;
-        }
-        .gauge-percentage-value {
-          font-size: 1.6rem;
+        .circular-progress-label {
+          font-size: 0.6rem;
         }
         .stats-grid {
           grid-template-columns: 1fr;
@@ -806,7 +830,28 @@
         .closer-photo img {
           font-size: 0;
         }
+        .evolution-table {
+          font-size: 0.8rem;
+        }
+        .evolution-table th,
+        .evolution-table td {
+          padding: 0.5rem;
+        }
       }
+      /* Estilo para a primeira frase (pode ser adicionado na tag <style> se preferir) */
+.subtle-question {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.action-prompt {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-align: left;
+}
     </style>
   </head>
   <body>
@@ -851,11 +896,12 @@
             >
               <div id="selectedPhoto" class="selected-photo"></div>
               <div id="selectedName" class="selected-name"></div>
-              <div class="gauge-container">
-                <svg viewBox="0 0 200 100">
+
+              <div class="circular-progress-display">
+                <svg viewBox="0 0 100 100">
                   <defs>
                     <linearGradient
-                      id="gaugeGradient"
+                      id="circularProgressGradient"
                       x1="0%"
                       y1="0%"
                       x2="100%"
@@ -869,27 +915,42 @@
                       <stop offset="100%" stop-color="var(--highlight-blue)" />
                     </linearGradient>
                   </defs>
-                  <path
-                    class="gauge-track"
-                    d="M 20 90 A 70 70 0 0 1 180 90"
-                  ></path>
-                  <path
-                    id="gaugeFillSvg"
-                    class="gauge-fill-animated"
-                    d="M 20 90 A 70 70 0 0 1 180 90"
-                    stroke-dasharray="219.91"
-                    stroke-dashoffset="219.91"
-                  ></path>
+                  <circle
+                    class="circular-progress-track"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke-width="10"
+                  />
+                  <circle
+                    id="individualPerformanceCircleFill"
+                    class="circular-progress-fill"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke-width="10"
+                    transform="rotate(-90 50 50)"
+                    stroke-dasharray="263.8937829"
+                    stroke-dashoffset="263.8937829"
+                    stroke="url(#circularProgressGradient)"
+                  />
                 </svg>
-                <div class="gauge-text-wrapper">
-                  <div id="gaugePercentageValue" class="gauge-percentage-value">
-                    0%
+                <div class="circular-progress-text-wrapper">
+                  <div
+                    id="individualPerformanceValue"
+                    class="circular-progress-value"
+                  >
+                    R$ 0
                   </div>
-                  <div id="gaugeLabel" class="gauge-label">
-                    Em Relação ao Top 1
+                  <div
+                    id="individualPerformanceLabel"
+                    class="circular-progress-label"
+                  >
+                    Faturamento
                   </div>
                 </div>
               </div>
+
               <div class="stats-grid">
                 <div class="stat-item">
                   <div id="currentResult" class="stat-value">R$ 0</div>
@@ -924,6 +985,30 @@
             style="position: relative; height: 350px; width: 100%"
           >
             <canvas id="monthlyTargetEvolutionChart"></canvas>
+          </div>
+          <div id="evolutionTableContainer" class="evolution-table-container">
+            <table class="evolution-table">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Meta Mensal Adaptada</th>
+                        <th>Faturamento Mensal Realizado</th>
+                        <th>Ritmo Ideal</th>
+                    </tr>
+                </thead>
+                <tbody id="evolutionTableBody">
+                    </tbody>
+            </table>
+          </div>
+          <div style="margin-top: 1rem; padding: 0 1rem;">
+            <p style="font-size: 0.8rem; color: var(--text-secondary); text-align: left; margin-bottom: 0.5rem;">
+              <em>O que são as Metas Adaptadas?</em>
+            </p>
+            <p style="font-size: 0.9rem; color: var(--text-primary); text-align: left;">
+              O que precisamos fazer agora já que não batemos as metas nos meses passados.
+            </p>
+          </div>
+        </div>
           </div>
         </div>
       </div>
@@ -1205,10 +1290,12 @@
         "Novembro",
         "Dezembro",
       ];
-      const SIMULATED_CURRENT_DATE = new Date(2025, 5, 2);
+      const SIMULATED_CURRENT_DATE = new Date(2025, 5, 2); // Junho é mês 5
       let monthlyTargetChartInstance = null;
+      let valueAnimationId = null;
 
       function formatCurrency(value) {
+        if (value === null || typeof value === "undefined") return "N/A";
         return value.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
@@ -1220,23 +1307,42 @@
         const annualTarget = ANNUAL_TARGET;
         const currentYear = SIMULATED_CURRENT_DATE.getFullYear();
         const labels = [];
-        const monthlyTargetsData = [];
+
+        const monthlyTargetsData = [
+          null, // Janeiro (N/A)
+          null, // Fevereiro (N/A)
+          null, // Março (N/A)
+          null, // Abril (N/A)
+          null, // Maio (N/A)
+          2347877.88, // Junho
+          5146040.81, // Julho
+          2572194.39, // Agosto
+          2929831.47, // Setembro
+          4346363.61, // Outubro
+          820533.55, // Novembro
+          2841998.57, // Dezembro
+        ];
+
         const actualRevenueData = [];
-        const idealPaceData = [];
+        const idealPaceData = [
+          1479000.0, // Janeiro
+          630000.0, // Fevereiro
+          2270505.0, // Março
+          1108068.0, // Abril
+          1830000.0, // Maio
+          2009565.0, // Junho
+          4500034.89, // Julho
+          3288150.0, // Agosto
+          2667480.0, // Setembro
+          3868830.0, // Outubro
+          3708231.0, // Novembro
+          5590257.18, // Dezembro
+        ];
+
         let revenueAccumulatedPriorMonths = 0;
         for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
           labels.push(monthNamesPt[monthIndex]);
-          idealPaceData.push(annualTarget / 12);
-          const mesesRestantesNoAno = 12 - monthIndex;
-          let metaDoMes;
-          if (mesesRestantesNoAno > 0) {
-            metaDoMes =
-              (annualTarget - revenueAccumulatedPriorMonths) /
-              mesesRestantesNoAno;
-          } else {
-            metaDoMes = annualTarget - revenueAccumulatedPriorMonths;
-          }
-          monthlyTargetsData.push(Math.max(0, metaDoMes));
+
           let revenueThisMonth = 0;
           rawSalesData.forEach((sale) => {
             const saleDate = new Date(sale.date);
@@ -1266,7 +1372,7 @@
             labels: chartData.labels,
             datasets: [
               {
-                label: "Meta Mensal Dinâmica (para 30M)",
+                label: "Meta Mensal Adaptada",
                 data: chartData.monthlyTargetsData,
                 borderColor: "rgba(255, 159, 64, 1)",
                 backgroundColor: "rgba(255, 159, 64, 0.2)",
@@ -1274,6 +1380,7 @@
                 tension: 0.1,
                 pointRadius: 4,
                 pointHoverRadius: 6,
+                spanGaps: true,
               },
               {
                 label: "Faturamento Mensal Realizado",
@@ -1286,7 +1393,7 @@
                 pointHoverRadius: 6,
               },
               {
-                label: "Ritmo Ideal (30M/12)",
+                label: "Ritmo Ideal",
                 data: chartData.idealPaceData,
                 borderColor: "rgba(150, 150, 150, 0.7)",
                 backgroundColor: "rgba(150, 150, 150, 0.1)",
@@ -1307,14 +1414,15 @@
                 title: {
                   display: true,
                   text: "Faturamento (R$)",
-                  color: "#FFFFFF", // Changed to white
+                  color: "#FFFFFF",
                   font: { size: 14 },
                 },
                 ticks: {
                   callback: function (value) {
+                    if (value === null) return "N/A";
                     return formatCurrency(value);
                   },
-                  color: "#FFFFFF", // Changed to white
+                  color: "#FFFFFF",
                 },
                 grid: {
                   color: "rgba(255, 255, 255, 0.1)",
@@ -1324,11 +1432,11 @@
                 title: {
                   display: true,
                   text: "Mês",
-                  color: "#FFFFFF", // Changed to white
+                  color: "#FFFFFF",
                   font: { size: 14 },
                 },
                 ticks: {
-                  color: "#FFFFFF", // Changed to white
+                  color: "#FFFFFF",
                 },
                 grid: {
                   color: "rgba(255, 255, 255, 0.05)",
@@ -1338,13 +1446,13 @@
             plugins: {
               legend: {
                 labels: {
-                  color: "#FFFFFF", // Changed to white
+                  color: "#FFFFFF",
                 },
               },
               tooltip: {
                 backgroundColor: "rgba(0,0,0,0.8)",
-                titleColor: "var(--text-primary)",
-                bodyColor: "var(--text-secondary)",
+                titleColor: "#FFFFFF",
+                bodyColor: "var(--text-primary)",
                 callbacks: {
                   label: function (context) {
                     let label = context.dataset.label || "";
@@ -1353,14 +1461,77 @@
                     }
                     if (context.parsed.y !== null) {
                       label += formatCurrency(context.parsed.y);
+                    } else {
+                      label += "N/A";
                     }
                     return label;
+                  },
+                  labelTextColor: function (context) {
+                    const datasetLabel = context.dataset.label;
+                    if (
+                      datasetLabel === "Meta Mensal Adaptada" ||
+                      datasetLabel === "Faturamento Mensal Realizado" ||
+                      datasetLabel === "Ritmo Ideal"
+                    ) {
+                      return "#FFFFFF";
+                    }
+                    return "var(--text-primary)";
+                  },
+                  color: function (context) {
+                    const datasetLabel = context.dataset.label;
+                    if (datasetLabel === "Meta Mensal Adaptada") {
+                      return {
+                        borderColor: "rgba(255, 159, 64, 1)",
+                        backgroundColor: "rgba(255, 199, 124, 1)",
+                      };
+                    } else if (
+                      datasetLabel === "Faturamento Mensal Realizado"
+                    ) {
+                      return {
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        backgroundColor: "rgba(115, 220, 220, 1)",
+                      };
+                    }
+                    const originalBorderColor = context.dataset.borderColor;
+                    return {
+                      borderColor: originalBorderColor,
+                      backgroundColor: originalBorderColor,
+                    };
                   },
                 },
               },
             },
           },
         });
+      }
+
+      function renderEvolutionTable(chartData) {
+        const tableBody = document.getElementById("evolutionTableBody");
+        tableBody.innerHTML = ""; // Clear previous rows
+
+        for (let i = 0; i < chartData.labels.length; i++) {
+          const row = tableBody.insertRow();
+
+          const cellMonth = row.insertCell();
+          cellMonth.textContent = chartData.labels[i];
+
+          const cellTarget = row.insertCell();
+          cellTarget.textContent = formatCurrency(
+            chartData.monthlyTargetsData[i]
+          );
+          cellTarget.className =
+            chartData.monthlyTargetsData[i] === null ? "na-value" : "currency";
+
+          const cellActual = row.insertCell();
+          cellActual.textContent = formatCurrency(
+            chartData.actualRevenueData[i]
+          );
+          cellActual.className = "currency";
+
+          const cellIdeal = row.insertCell();
+          cellIdeal.textContent = formatCurrency(chartData.idealPaceData[i]);
+          cellIdeal.className = "currency";
+        }
       }
 
       function populateDateFilter() {
@@ -1575,20 +1746,27 @@
         });
       }
 
-      let gaugeCounterInterval;
       function updateIndividualView(closerId, dataForPeriod) {
         const closer = dataForPeriod.find((c) => c.closerId === closerId);
         const infoDiv = document.getElementById("selectedCloserInfo");
         const photoDiv = document.getElementById("selectedPhoto");
         const noDataMsg = document.getElementById("noIndividualDataMessage");
+
+        if (valueAnimationId) {
+          cancelAnimationFrame(valueAnimationId);
+          valueAnimationId = null;
+        }
+
         if (!closer) {
           infoDiv.style.display = "none";
           noDataMsg.textContent =
             "Dados não encontrados para este closer no período selecionado.";
           noDataMsg.style.display = "block";
-          if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
+          document.getElementById("individualPerformanceValue").textContent =
+            formatCurrency(0);
           return;
         }
+
         noDataMsg.style.display = "none";
         infoDiv.style.display = "flex";
         photoDiv.innerHTML = `<img src="${closer.imageUrl}" alt="Foto de ${closer.name}" />`;
@@ -1600,59 +1778,121 @@
           closer.numberOfSales;
         document.getElementById("averageTicketValue").textContent =
           formatCurrency(closer.averageTicket);
-        document.getElementById("gaugeLabel").textContent =
-          "Em Relação ao Top 1";
-        const gaugeFillSvg = document.getElementById("gaugeFillSvg");
-        const gaugePercentageValue = document.getElementById(
-          "gaugePercentageValue"
+
+        const top1Performer =
+          dataForPeriod.length > 0 && dataForPeriod[0].result > 0
+            ? dataForPeriod[0]
+            : null;
+        const top1Result = top1Performer ? top1Performer.result : 0;
+        const selectedCloserResult = closer.result;
+
+        let progressRatio = 0;
+        if (top1Result > 0) {
+          progressRatio = selectedCloserResult / top1Result;
+        } else if (selectedCloserResult > 0) {
+          progressRatio = 1;
+        }
+        progressRatio = Math.min(Math.max(progressRatio, 0), 1);
+
+        const circleFill = document.getElementById(
+          "individualPerformanceCircleFill"
         );
-        const totalPathLength = 219.91;
-        const percentageNormalized = Math.min(closer.percentage, 100) / 100;
-        const strokeOffset = totalPathLength * (1 - percentageNormalized);
-        gaugeFillSvg.style.strokeDashoffset = totalPathLength;
+        const radius = parseFloat(circleFill.getAttribute("r"));
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference * (1 - progressRatio);
+
+        circleFill.style.strokeDasharray = circumference;
         requestAnimationFrame(() => {
-          gaugeFillSvg.style.strokeDashoffset = strokeOffset;
+          circleFill.style.strokeDashoffset = offset;
         });
-        if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
-        let currentPerc = 0;
-        const targetPerc = closer.percentage;
-        gaugePercentageValue.textContent = `0%`;
-        if (targetPerc === 0 && closer.result === 0) {
-          gaugePercentageValue.textContent = `0%`;
-          gaugeFillSvg.style.strokeDashoffset = totalPathLength;
-        } else {
-          const duration = 1500,
-            frameDuration = 20,
-            totalFrames = duration / frameDuration;
-          const increment = targetPerc / totalFrames;
-          if (targetPerc === 0) {
-            gaugePercentageValue.textContent = `0%`;
+
+        const valueElement = document.getElementById(
+          "individualPerformanceValue"
+        );
+        const animationDuration = 1500;
+        let startTimestamp = null;
+        const startValue = 0;
+        const endValue = selectedCloserResult;
+
+        function step(timestamp) {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const elapsedTime = timestamp - startTimestamp;
+          const progress = Math.min(elapsedTime / animationDuration, 1);
+          const currentValue = startValue + (endValue - startValue) * progress;
+
+          valueElement.textContent = formatCurrency(currentValue);
+
+          if (progress < 1) {
+            valueAnimationId = requestAnimationFrame(step);
           } else {
-            gaugeCounterInterval = setInterval(() => {
-              currentPerc += increment;
-              if (currentPerc >= targetPerc) {
-                currentPerc = targetPerc;
-                clearInterval(gaugeCounterInterval);
-              }
-              gaugePercentageValue.textContent = `${Math.round(currentPerc)}%`;
-            }, frameDuration);
+            valueElement.textContent = formatCurrency(endValue);
+            valueAnimationId = null;
           }
         }
+        valueAnimationId = requestAnimationFrame(step);
+
+        let labelText = "Faturamento";
+        if (
+          selectedCloserResult === 0 &&
+          (!top1Performer || top1Result === 0)
+        ) {
+          labelText = "Sem faturamento";
+        } else if (top1Performer) {
+          if (closer.closerId === top1Performer.closerId) {
+            labelText = "Top 1 Performance";
+          } else {
+            labelText = `de ${formatCurrency(top1Result)} (Top 1)`;
+          }
+        } else if (selectedCloserResult > 0) {
+          labelText = "Único com Faturamento";
+        }
+        document.getElementById("individualPerformanceLabel").textContent =
+          labelText;
       }
 
       function clearIndividualView() {
+        if (valueAnimationId) {
+          cancelAnimationFrame(valueAnimationId);
+          valueAnimationId = null;
+        }
+
         document.getElementById("selectedCloserInfo").style.display = "none";
         document.getElementById("noIndividualDataMessage").style.display =
-          "none";
+          "block";
+        document.getElementById("noIndividualDataMessage").textContent =
+          "Selecione um closer para ver os detalhes.";
         document.getElementById("closerSelect").value = "";
-        if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
-        const gaugeFillSvg = document.getElementById("gaugeFillSvg");
-        const gaugePercentageValue = document.getElementById(
-          "gaugePercentageValue"
+
+        const circleFill = document.getElementById(
+          "individualPerformanceCircleFill"
         );
-        if (gaugeFillSvg) gaugeFillSvg.style.strokeDashoffset = 219.91;
-        if (gaugePercentageValue) gaugePercentageValue.textContent = `0%`;
-        document.getElementById("selectedPhoto").innerHTML = "";
+        if (circleFill) {
+          const radius = parseFloat(circleFill.getAttribute("r"));
+          const circumference = 2 * Math.PI * radius;
+          circleFill.style.transition = "none";
+          circleFill.style.strokeDashoffset = circumference;
+          circleFill.offsetHeight;
+          circleFill.style.transition =
+            "stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1)";
+        }
+        const valueText = document.getElementById("individualPerformanceValue");
+        if (valueText) valueText.textContent = formatCurrency(0);
+        const labelText = document.getElementById("individualPerformanceLabel");
+        if (labelText) labelText.textContent = "Faturamento";
+
+        const selectedPhotoDiv = document.getElementById("selectedPhoto");
+        if (selectedPhotoDiv) selectedPhotoDiv.innerHTML = "";
+        const selectedNameDiv = document.getElementById("selectedName");
+        if (selectedNameDiv) selectedNameDiv.textContent = "";
+
+        const currentResultDiv = document.getElementById("currentResult");
+        if (currentResultDiv) currentResultDiv.textContent = formatCurrency(0);
+        const salesCountValueDiv = document.getElementById("salesCountValue");
+        if (salesCountValueDiv) salesCountValueDiv.textContent = "0";
+        const averageTicketValueDiv =
+          document.getElementById("averageTicketValue");
+        if (averageTicketValueDiv)
+          averageTicketValueDiv.textContent = formatCurrency(0);
       }
 
       function refreshDashboard() {
@@ -1661,6 +1901,7 @@
 
         const evolutionChartData = generateMonthlyTargetChartData();
         renderMonthlyTargetChart(evolutionChartData);
+        renderEvolutionTable(evolutionChartData); // Call the new function here
 
         generatePodium(currentProcessedData);
         generateRanking(currentProcessedData);
