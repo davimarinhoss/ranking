@@ -866,7 +866,7 @@
       </div>
 
       <div class="podium-section">
-        <h2 class="podium-title">Pódio de Vendas</h2>
+        <h2 class="podium-title">Hall da Fama - Top Closers</h2>
         <div id="podium-container" class="podium-container"></div>
       </div>
 
@@ -1683,11 +1683,11 @@
         const salesPerformers = data.filter((closer) => closer.result > 0);
         if (salesPerformers.length === 0) {
           podiumTitle.textContent =
-            "Pódio de Vendas (Sem dados para o período)";
+            "Hall da Fama (Sem dados para o período)";
           container.innerHTML = `<p class="empty-data-message">Nenhum dado de vendas para o período selecionado.</p>`;
           return;
         }
-        podiumTitle.textContent = "Pódio de Vendas";
+        podiumTitle.textContent = "Hall da Fama - Top Closers";
         const topThree = salesPerformers.slice(0, 3);
         const createPodiumElement = (closerData, placeClass, rankText) => {
           if (!closerData) return null;
