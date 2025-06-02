@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Performance - Closers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-gradient-start: #0f1419;
+        --bg-gradient-end: #1a202e;
+        --text-primary: #e0e6ed;
+        --text-secondary: #8c9cb0;
+        --card-bg: rgba(29, 38, 53, 0.85);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --highlight-gold: #ffd700;
+        --highlight-gold-shadow: rgba(255, 215, 0, 0.5);
+        --highlight-silver: #c0c0c0;
+        --highlight-silver-shadow: rgba(192, 192, 192, 0.4);
+        --highlight-bronze: #cd7f32;
+        --highlight-bronze-shadow: rgba(205, 127, 50, 0.4);
+        --highlight-blue: #4299e1;
+        --highlight-blue-rgb: 66, 153, 225;
+        --highlight-blue-light: #63b3ed;
+        --highlight-green: #48bb78;
+        --highlight-green-light: #68d391;
+        --font-main: "Inter", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background: linear-gradient(
+          135deg,
+          var(--bg-gradient-start) 0%,
+          var(--bg-gradient-end) 100%
+        );
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .filters-bar {
+        background-color: rgba(29, 38, 53, 0.7);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid var(--card-border);
+      }
+      .filters-bar label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+      .filters-bar .dropdown {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+        padding: 0.6rem 2.2rem 0.6rem 0.8rem;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-family: var(--font-main);
+        cursor: pointer;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238c9cb0'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.6rem center;
+        background-size: 1.1em;
+        min-width: 200px;
+      }
+      .filters-bar .dropdown option {
+        background-color: var(--bg-gradient-end);
+        color: var(--text-primary);
+      }
+      .filters-bar .dropdown:hover {
+        border-color: var(--highlight-blue);
+      }
+      .filters-bar .dropdown:focus {
+        outline: none;
+        border-color: var(--highlight-blue-light);
+      }
+
+      .podium-section {
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--card-border);
+      }
+      .podium-title {
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        background: linear-gradient(135deg, #f0f0f0, #b0c0d0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+      .podium-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 1rem;
+        min-height: 340px;
+      }
+      .podium-item {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        width: 200px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        position: relative;
+      }
+      .podium-closer-photo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        border: 4px solid transparent;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+        background-color: var(--bg-gradient-start);
+      }
+      .podium-closer-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .podium-item:hover .podium-closer-photo {
+        transform: scale(1.05);
+      }
+      .podium-item .rank {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+      .podium-item .name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+      .podium-item .sales {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--highlight-green);
+      }
+
+      .podium-item.first {
+        height: 330px;
+        border-top: 5px solid var(--highlight-gold);
+      }
+      .podium-item.first .podium-closer-photo {
+        border-color: var(--highlight-gold);
+        box-shadow: 0 0 20px var(--highlight-gold-shadow),
+          0 5px 15px rgba(0, 0, 0, 0.25);
+      }
+      .podium-item.first .rank {
+        color: var(--highlight-gold);
+      }
+
+      .podium-item.second {
+        height: 290px;
+        border-top: 5px solid var(--highlight-silver);
+      }
+      .podium-item.second .podium-closer-photo {
+        border-color: var(--highlight-silver);
+        box-shadow: 0 0 15px var(--highlight-silver-shadow),
+          0 5px 15px rgba(0, 0, 0, 0.25);
+      }
+      .podium-item.second .rank {
+        color: var(--highlight-silver);
+      }
+
+      .podium-item.third {
+        height: 250px;
+        border-top: 5px solid var(--highlight-bronze);
+      }
+      .podium-item.third .podium-closer-photo {
+        border-color: var(--highlight-bronze);
+        box-shadow: 0 0 12px var(--highlight-bronze-shadow),
+          0 5px 15px rgba(0, 0, 0, 0.25);
+      }
+      .podium-item.third .rank {
+        color: var(--highlight-bronze);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+      }
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 5px;
+        background: linear-gradient(90deg, var(--highlight-gold), #ffed4e);
+        border-radius: 3px;
+        box-shadow: 0 0 15px var(--highlight-gold-shadow);
+      }
+      .header h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #f0f0f0, #b0c0d0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.5px;
+      }
+      .header p {
+        color: var(--text-secondary);
+        font-size: 1.15rem;
+        font-weight: 400;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* DASHBOARD GRID & CARDS - RESTORED */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 2rem;
+      }
+      .card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        transition: transform 0.3s ease, box-shadow 0.3s ease,
+          border-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+        border-color: rgba(var(--highlight-blue-rgb), 0.4);
+      }
+      .card-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 1.8rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .card-title .icon {
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--highlight-blue);
+      }
+      .card-title::before {
+        content: "";
+        width: 5px;
+        height: 24px;
+        background: linear-gradient(
+          180deg,
+          var(--highlight-blue),
+          var(--highlight-blue-light)
+        );
+        border-radius: 3px;
+      }
+
+      /* RANKING ITEM */
+      .ranking-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 0.5rem;
+        border-radius: 12px;
+        transition: background-color 0.3s ease;
+        position: relative;
+        animation: fadeIn 0.6s ease forwards;
+        opacity: 0;
+      }
+      .ranking-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .ranking-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .ranking-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .ranking-item:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .ranking-item:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .ranking-item:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+      .ranking-position {
+        font-size: 1.1rem;
+        font-weight: 700;
+        width: 35px;
+        text-align: center;
+        margin-right: 1rem;
+        color: var(--text-secondary);
+      }
+      .top-1 .ranking-position {
+        color: var(--highlight-gold);
+        text-shadow: 0 0 12px var(--highlight-gold-shadow);
+        font-size: 1.3rem;
+      }
+
+      .closer-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        background-color: var(--bg-gradient-start);
+      }
+      .closer-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .ranking-item:hover .closer-photo {
+        border-color: var(--highlight-blue-light);
+      }
+      .top-1 .closer-photo {
+        box-shadow: 0 0 15px var(--highlight-gold-shadow);
+        border-color: var(--highlight-gold);
+      }
+
+      .closer-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .closer-name {
+        font-weight: 500;
+        font-size: 1rem;
+        margin-bottom: 0.35rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .progress-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .progress-container {
+        background: rgba(0, 0, 0, 0.35);
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+        flex: 1;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--highlight-blue),
+          var(--highlight-blue-light)
+        );
+        border-radius: 5px;
+        transition: width 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+        position: relative;
+      }
+      .top-1 .progress-bar {
+        background: linear-gradient(90deg, var(--highlight-gold), #ffed4e);
+      }
+      .progress-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.25),
+          transparent
+        );
+        animation: shimmer 2.5s infinite;
+      }
+      .percentage {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        min-width: 40px;
+        text-align: right;
+      }
+
+      /* INDIVIDUAL PERFORMANCE SECTION */
+      .individual-section {
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .closer-selector {
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+      .closer-selector .dropdown {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 0.8rem 2.5rem 0.8rem 1rem;
+        font-size: 1rem;
+      }
+      .selected-closer-display {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 1rem;
+        min-height: 300px;
+      }
+
+      #selectedPhoto {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 18px rgba(var(--highlight-blue-rgb), 0.35);
+        animation: pulse 2.2s infinite ease-in-out;
+        overflow: hidden;
+        background-color: var(--bg-gradient-start);
+      }
+      #selectedPhoto img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .selected-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .gauge-container {
+        position: relative;
+        width: 200px;
+        height: 100px;
+        margin: 1.5rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .gauge-container svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .gauge-track,
+      .gauge-fill-animated {
+        fill: none;
+        stroke-width: 16;
+        stroke-linecap: round;
+      }
+      .gauge-track {
+        stroke: rgba(0, 0, 0, 0.3);
+      }
+      .gauge-fill-animated {
+        stroke: url(#gaugeGradient);
+        transition: stroke-dashoffset 1.5s cubic-bezier(0.42, 0, 0.58, 1);
+      }
+      .gauge-text-wrapper {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .gauge-percentage-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+      }
+      .gauge-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+        width: 100%;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .stat-item {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--highlight-green);
+        margin-bottom: 0.35rem;
+        line-height: 1.2;
+      }
+      #salesCountValue.stat-value {
+        color: var(--highlight-blue-light);
+      }
+      #averageTicketValue.stat-value {
+        color: var(--highlight-gold);
+      }
+      .stat-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-data-message {
+        text-align: center;
+        color: var(--text-secondary);
+        font-style: italic;
+        padding: 2rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes shimmer {
+        0% {
+          left: -150%;
+        }
+        100% {
+          left: 150%;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 6px 18px rgba(var(--highlight-blue-rgb), 0.35);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 8px 25px rgba(var(--highlight-blue-rgb), 0.45);
+        }
+      }
+
+      @media (max-width: 992px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+        .podium-container {
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
+          min-height: auto;
+        }
+        .podium-item.second {
+          order: 1;
+        }
+        .podium-item.first {
+          order: 0;
+        }
+        .podium-item.third {
+          order: 2;
+        }
+        .podium-item {
+          width: 80%;
+          max-width: 300px;
+          height: auto !important;
+          padding: 1rem;
+          border-radius: 12px;
+        }
+        .podium-closer-photo {
+          width: 60px;
+          height: 60px;
+          margin-bottom: 0.75rem;
+        }
+        .podium-closer-photo img {
+          font-size: 0;
+        }
+        .podium-item .rank {
+          font-size: 2rem;
+        }
+        .podium-item .name {
+          font-size: 1rem;
+        }
+        .podium-item .sales {
+          font-size: 1.1rem;
+        }
+        .filters-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filters-bar .dropdown {
+          width: 100%;
+        }
+      }
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2.2rem;
+        }
+        .header p {
+          font-size: 1rem;
+        }
+        .container {
+          padding: 1.5rem;
+        }
+        .card {
+          padding: 1.5rem;
+          border-radius: 20px;
+        }
+        .card-title {
+          font-size: 1.4rem;
+        }
+        .gauge-container {
+          width: 180px;
+          height: 90px;
+        }
+        .gauge-text-wrapper {
+          top: 58%;
+        }
+        .gauge-percentage-value {
+          font-size: 1.8rem;
+        }
+        .stats-grid {
+          gap: 0.75rem;
+          grid-template-columns: 1fr 1fr;
+          max-width: 300px;
+        }
+        .stats-grid .stat-item:last-child {
+          grid-column: span 2;
+        }
+        .stat-value {
+          font-size: 1.4rem;
+        }
+        .podium-title {
+          font-size: 1.8rem;
+        }
+        .podium-item {
+          width: 70%;
+          max-width: 280px;
+        }
+      }
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1.8rem;
+        }
+        .header p {
+          font-size: 0.9rem;
+        }
+        .container {
+          padding: 1rem;
+        }
+        .card-title {
+          font-size: 1.25rem;
+          gap: 0.5rem;
+          margin-bottom: 1.2rem;
+        }
+        .card-title::before {
+          height: 20px;
+          width: 4px;
+        }
+        .closer-name {
+          font-size: 0.95rem;
+        }
+        .progress-container {
+          height: 8px;
+        }
+        .closer-selector .dropdown {
+          font-size: 0.9rem;
+          padding: 0.7rem 2.2rem 0.7rem 0.8rem;
+        }
+        #selectedPhoto {
+          width: 70px;
+          height: 70px;
+        }
+        #selectedPhoto img {
+          font-size: 0;
+        }
+        .selected-name {
+          font-size: 1.1rem;
+        }
+        .gauge-container {
+          width: 160px;
+          height: 80px;
+        }
+        .gauge-track,
+        .gauge-fill-animated {
+          stroke-width: 14;
+        }
+        .gauge-text-wrapper {
+          top: 56%;
+        }
+        .gauge-percentage-value {
+          font-size: 1.6rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+          max-width: 200px;
+        }
+        .stats-grid .stat-item:last-child {
+          grid-column: span 1;
+        }
+        .stat-value {
+          font-size: 1.3rem;
+        }
+        .stat-label {
+          font-size: 0.8rem;
+        }
+        .podium-title {
+          font-size: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .podium-item {
+          width: 90%;
+        }
+        .podium-closer-photo {
+          width: 50px;
+          height: 50px;
+          border-width: 3px;
+        }
+        .podium-closer-photo img {
+          font-size: 0;
+        }
+        .closer-photo {
+          width: 40px;
+          height: 40px;
+        }
+        .closer-photo img {
+          font-size: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="filters-bar">
+        <label for="dateFilter">Selecionar Período:</label>
+        <select id="dateFilter" class="dropdown"></select>
+      </div>
+
+      <div class="podium-section">
+        <h2 class="podium-title">Pódio de Vendas</h2>
+        <div id="podium-container" class="podium-container"></div>
+      </div>
+
+      <div class="header">
+        <h1>Dashboard de Performance</h1>
+        <p>Acompanhe o desempenho dos nossos top closers em tempo real</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h2 class="card-title">
+            <span class="icon">🏆</span> Ranking Top Closers
+          </h2>
+          <div id="ranking-container"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">
+            <span class="icon">📊</span> Performance Individual
+          </h2>
+          <div class="individual-section">
+            <div class="closer-selector">
+              <select id="closerSelect" class="dropdown">
+                <option value="">Selecione um closer</option>
+              </select>
+            </div>
+            <div
+              id="selectedCloserInfo"
+              class="selected-closer-display"
+              style="display: none"
+            >
+              <div id="selectedPhoto" class="selected-photo"></div>
+              <div id="selectedName" class="selected-name"></div>
+              <div class="gauge-container">
+                <svg viewBox="0 0 200 100">
+                  <defs>
+                    <linearGradient
+                      id="gaugeGradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="0%"
+                    >
+                      <stop offset="0%" stop-color="var(--highlight-green)" />
+                      <stop
+                        offset="50%"
+                        stop-color="var(--highlight-green-light)"
+                      />
+                      <stop offset="100%" stop-color="var(--highlight-blue)" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    class="gauge-track"
+                    d="M 20 90 A 70 70 0 0 1 180 90"
+                  ></path>
+                  <path
+                    id="gaugeFillSvg"
+                    class="gauge-fill-animated"
+                    d="M 20 90 A 70 70 0 0 1 180 90"
+                    stroke-dasharray="219.91"
+                    stroke-dashoffset="219.91"
+                  ></path>
+                </svg>
+                <div class="gauge-text-wrapper">
+                  <div id="gaugePercentageValue" class="gauge-percentage-value">
+                    0%
+                  </div>
+                  <div id="gaugeLabel" class="gauge-label">
+                    Performance Relativa
+                  </div>
+                </div>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <div id="currentResult" class="stat-value">R$ 0</div>
+                  <div class="stat-label">Resultado no Período</div>
+                </div>
+                <div class="stat-item">
+                  <div id="salesCountValue" class="stat-value">0</div>
+                  <div id="salesCountLabel" class="stat-label">
+                    Nº de Vendas no Período
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <div id="averageTicketValue" class="stat-value">R$ 0</div>
+                  <div class="stat-label">Ticket Médio</div>
+                </div>
+              </div>
+            </div>
+            <div
+              id="noIndividualDataMessage"
+              class="empty-data-message"
+              style="display: none"
+            >
+              Nenhum dado disponível para este closer no período selecionado.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- DATA ---
+      const closersInfo = {
+        cfn: {
+          name: "Caio Ferreira Nascimento",
+          initials: "CF",
+          targetSalesCount: 20,
+          imageUrl:
+            "https://i.postimg.cc/ryBWdNyV/Captura-de-Tela-2025-06-02-a-s-11-11-56.png",
+        },
+        ba: {
+          name: "Bruna Amorim",
+          initials: "BA",
+          targetSalesCount: 20,
+          imageUrl: "./images/ba.png",
+        },
+        bf: {
+          name: "Bruna Ferreira",
+          initials: "BF",
+          targetSalesCount: 18,
+          imageUrl:
+            "https://i.postimg.cc/1tywzmyp/Captura-de-Tela-2025-06-02-a-s-11-10-25.png",
+        },
+        ri: {
+          name: "Ricardo",
+          initials: "RI",
+          targetSalesCount: 15,
+          imageUrl:
+            "https://i.postimg.cc/kX5rbKTH/Captura-de-Tela-2025-06-02-a-s-11-12-40.png",
+        },
+        gm: {
+          name: "Gabriel Miranda",
+          initials: "GM",
+          targetSalesCount: 18,
+          imageUrl:
+            "https://i.postimg.cc/NG3Ckn7Z/Captura-de-Tela-2025-06-02-a-s-11-14-15.png",
+        },
+        jas: {
+          name: "Jorge Antonio Silveira",
+          initials: "JA",
+          targetSalesCount: 15,
+          imageUrl: "./images/jas.png",
+        },
+        mc: {
+          name: "Matheus Cardinal",
+          initials: "MC",
+          targetSalesCount: 15,
+          imageUrl: "./images/mc.png",
+        },
+        ya: {
+          name: "Yvan Arruda",
+          initials: "YA",
+          targetSalesCount: 12,
+          imageUrl:
+            "https://i.postimg.cc/SQvdg9y3/Captura-de-Tela-2025-06-02-a-s-11-13-27.png",
+        },
+      };
+
+      let rawSalesData = [
+        // June 2025 (Current Month for simulation)
+        {
+          closerId: "cfn",
+          result: 30000,
+          numberOfSales: 5,
+          date: "2025-06-05",
+        },
+        {
+          closerId: "cfn",
+          result: 25000,
+          numberOfSales: 4,
+          date: "2025-06-15",
+        },
+        { closerId: "ba", result: 45000, numberOfSales: 6, date: "2025-06-03" },
+        { closerId: "bf", result: 32000, numberOfSales: 5, date: "2025-06-10" },
+        { closerId: "ri", result: 25000, numberOfSales: 3, date: "2025-06-08" },
+
+        // May 2025
+        {
+          closerId: "cfn",
+          result: 40000,
+          numberOfSales: 8,
+          date: "2025-05-10",
+        },
+        { closerId: "ba", result: 20000, numberOfSales: 4, date: "2025-05-05" },
+        { closerId: "ba", result: 22000, numberOfSales: 5, date: "2025-05-20" },
+        { closerId: "gm", result: 50000, numberOfSales: 7, date: "2025-05-15" },
+        { closerId: "bf", result: 28000, numberOfSales: 4, date: "2025-05-12" },
+
+        // April 2025
+        {
+          closerId: "cfn",
+          result: 15000,
+          numberOfSales: 3,
+          date: "2025-04-20",
+        },
+        { closerId: "ri", result: 22000, numberOfSales: 3, date: "2025-04-18" },
+        { closerId: "ba", result: 9000, numberOfSales: 1, date: "2025-04-25" }, // ADDED 3rd for April
+
+        // March 2025
+        { closerId: "ya", result: 62000, numberOfSales: 9, date: "2025-03-10" },
+        { closerId: "mc", result: 30000, numberOfSales: 5, date: "2025-03-05" },
+        { closerId: "ri", result: 15000, numberOfSales: 2, date: "2025-03-18" }, // ADDED 3rd for March
+
+        // February 2025
+        { closerId: "mc", result: 38000, numberOfSales: 5, date: "2025-02-15" },
+        {
+          closerId: "jas",
+          result: 40000,
+          numberOfSales: 6,
+          date: "2025-02-10",
+        },
+        { closerId: "ya", result: 12000, numberOfSales: 2, date: "2025-02-20" }, // ADDED 3rd for February
+
+        // January 2025
+        {
+          closerId: "gm",
+          result: 60000,
+          numberOfSales: 12,
+          date: "2025-01-20",
+        },
+        {
+          closerId: "jas",
+          result: 35000,
+          numberOfSales: 6,
+          date: "2025-01-05",
+        },
+        { closerId: "bf", result: 10000, numberOfSales: 1, date: "2025-01-15" }, // ADDED 3rd for January
+
+        // Older data
+        {
+          closerId: "cfn",
+          result: 100000,
+          numberOfSales: 15,
+          date: "2024-12-01",
+        },
+        {
+          closerId: "ba",
+          result: 90000,
+          numberOfSales: 14,
+          date: "2024-11-01",
+        },
+      ];
+
+      rawSalesData = rawSalesData.filter((sale) => closersInfo[sale.closerId]);
+
+      const monthNamesPt = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+      const SIMULATED_CURRENT_DATE = new Date(2025, 5, 2);
+
+      function formatCurrency(value) {
+        return value.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 0,
+        });
+      }
+
+      function populateDateFilter() {
+        const filterSelect = document.getElementById("dateFilter");
+        filterSelect.innerHTML = "";
+        const currentYear = SIMULATED_CURRENT_DATE.getFullYear();
+        const currentMonth = SIMULATED_CURRENT_DATE.getMonth();
+        const currentMonthValue = `${currentYear}-${String(
+          currentMonth + 1
+        ).padStart(2, "0")}`;
+        filterSelect.add(
+          new Option(
+            `Mês Atual (${monthNamesPt[currentMonth]}/${currentYear})`,
+            currentMonthValue
+          )
+        );
+        for (let m = currentMonth - 1; m >= 0; m--) {
+          if (currentYear === 2025) {
+            const monthValue = `${currentYear}-${String(m + 1).padStart(
+              2,
+              "0"
+            )}`;
+            filterSelect.add(
+              new Option(`${monthNamesPt[m]}/${currentYear}`, monthValue)
+            );
+          }
+        }
+        filterSelect.add(new Option("Todo o Período", "all"));
+        filterSelect.value = currentMonthValue;
+      }
+
+      function getProcessedData(filterValue) {
+        let filteredSales = rawSalesData.filter(
+          (sale) => closersInfo[sale.closerId]
+        );
+        if (filterValue !== "all") {
+          const [year, month] = filterValue.split("-").map(Number);
+          filteredSales = filteredSales.filter((sale) => {
+            const saleDate = new Date(sale.date);
+            return (
+              saleDate.getFullYear() === year &&
+              saleDate.getMonth() + 1 === month
+            );
+          });
+        }
+        const aggregatedData = {};
+        for (const id in closersInfo) {
+          aggregatedData[id] = {
+            ...closersInfo[id],
+            closerId: id,
+            totalResult: 0,
+            totalNumberOfSales: 0,
+          };
+        }
+        filteredSales.forEach((sale) => {
+          if (aggregatedData[sale.closerId]) {
+            aggregatedData[sale.closerId].totalResult += sale.result;
+            aggregatedData[sale.closerId].totalNumberOfSales +=
+              sale.numberOfSales;
+          }
+        });
+        const closersArray = Object.values(aggregatedData);
+        let maxResultInPeriod = 0;
+        if (closersArray.length > 0) {
+          const salesPerformingClosers = closersArray.filter(
+            (c) => c.totalResult > 0
+          );
+          if (salesPerformingClosers.length > 0) {
+            maxResultInPeriod = Math.max(
+              ...salesPerformingClosers.map((c) => c.totalResult)
+            );
+          } else {
+            maxResultInPeriod = 0;
+          }
+        }
+        return closersArray
+          .map((closer) => ({
+            ...closer,
+            result: closer.totalResult,
+            numberOfSales: closer.totalNumberOfSales,
+            averageTicket:
+              closer.totalNumberOfSales > 0
+                ? closer.totalResult / closer.totalNumberOfSales
+                : 0,
+            percentage:
+              maxResultInPeriod > 0
+                ? Math.round((closer.totalResult / maxResultInPeriod) * 100)
+                : 0,
+          }))
+          .sort((a, b) => {
+            if (b.result !== a.result) {
+              return b.result - a.result;
+            }
+            if (b.numberOfSales !== a.numberOfSales) {
+              return b.numberOfSales - a.numberOfSales;
+            }
+            return a.name.localeCompare(b.name);
+          });
+      }
+
+      function generatePodium(data) {
+        const container = document.getElementById("podium-container");
+        container.innerHTML = "";
+        const podiumTitle = document.querySelector(
+          ".podium-section .podium-title"
+        );
+        const salesPerformers = data.filter((closer) => closer.result > 0);
+        if (salesPerformers.length === 0) {
+          podiumTitle.textContent =
+            "Pódio de Vendas (Sem dados para o período)";
+          container.innerHTML = `<p class="empty-data-message">Nenhum dado de vendas para o período selecionado.</p>`;
+          return;
+        }
+        podiumTitle.textContent = "Pódio de Vendas";
+        const topThree = salesPerformers.slice(0, 3);
+        const createPodiumElement = (closerData, placeClass, rankText) => {
+          if (!closerData) return null;
+          const podiumItem = document.createElement("div");
+          podiumItem.className = `podium-item ${placeClass}`;
+          podiumItem.innerHTML = `
+                <div class="podium-closer-photo">
+                    <img src="${closerData.imageUrl}" alt="Foto de ${
+            closerData.name
+          }" />
+                </div> 
+                <div class="rank">${rankText}</div>
+                <div class="name">${closerData.name}</div>
+                <div class="sales">${formatCurrency(closerData.result)}</div>
+            `;
+          return podiumItem;
+        };
+        let item2nd = null,
+          item1st = null,
+          item3rd = null;
+        if (topThree[0]) {
+          item1st = createPodiumElement(topThree[0], "first", "1º");
+        }
+        if (topThree[1]) {
+          item2nd = createPodiumElement(topThree[1], "second", "2º");
+        }
+        if (topThree[2]) {
+          item3rd = createPodiumElement(topThree[2], "third", "3º");
+        }
+        if (item2nd) container.appendChild(item2nd);
+        if (item1st) container.appendChild(item1st);
+        if (item3rd) container.appendChild(item3rd);
+      }
+
+      function generateRanking(data) {
+        const container = document.getElementById("ranking-container");
+        container.innerHTML = "";
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="empty-data-message">Nenhum closer no ranking para o período selecionado.</p>`;
+          return;
+        }
+
+        let displayRankCounter = 0;
+        let previousResult = -Infinity;
+        let previousSalesCount = -Infinity;
+        const closersWithRank = data.map((closer, index) => {
+          // This ranking logic assigns a new rank number if result or sales count differs from the previous closer in the sorted list.
+          // It ensures ties in result (and then sales count) get the same rank number based on the first person achieving that score.
+          if (
+            closer.result !== previousResult ||
+            closer.numberOfSales !== previousSalesCount
+          ) {
+            displayRankCounter = index + 1;
+          }
+          previousResult = closer.result;
+          previousSalesCount = closer.numberOfSales;
+          return { ...closer, displayRank: displayRankCounter };
+        });
+
+        closersWithRank.forEach((closer) => {
+          const isTop1 = closer.displayRank === 1 && closer.result > 0;
+          const rankingItem = document.createElement("div");
+          rankingItem.className = `ranking-item ${isTop1 ? "top-1" : ""}`;
+          rankingItem.innerHTML = `
+            <div class="ranking-position">${closer.displayRank}</div>
+            <div class="closer-photo">
+                <img src="${closer.imageUrl}" alt="Foto de ${closer.name}" />
+            </div>
+            <div class="closer-info">
+                <div class="closer-name">${closer.name}</div>
+                <div class="progress-wrapper">
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${Math.min(
+                          closer.percentage,
+                          100
+                        )}%"></div>
+                    </div>
+                    <span class="percentage">${closer.percentage}%</span>
+                </div>
+            </div>`;
+          container.appendChild(rankingItem);
+        });
+      }
+
+      function populateDropdown(data) {
+        const select = document.getElementById("closerSelect");
+        select.innerHTML = '<option value="">Selecione um closer</option>';
+        const noIndividualDataMsg = document.getElementById(
+          "noIndividualDataMessage"
+        );
+        const selectedCloserInfoDiv =
+          document.getElementById("selectedCloserInfo");
+        if (!data || data.length === 0) {
+          selectedCloserInfoDiv.style.display = "none";
+          noIndividualDataMsg.textContent = "Nenhum closer cadastrado.";
+          noIndividualDataMsg.style.display = "block";
+          return;
+        }
+        noIndividualDataMsg.style.display = "none";
+        const sortedDataForDropdown = [...data].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        sortedDataForDropdown.forEach((closer) => {
+          const option = document.createElement("option");
+          option.value = closer.closerId;
+          option.textContent = closer.name;
+          select.appendChild(option);
+        });
+      }
+
+      let gaugeCounterInterval;
+      function updateIndividualView(closerId, dataForPeriod) {
+        const closer = dataForPeriod.find((c) => c.closerId === closerId);
+        const infoDiv = document.getElementById("selectedCloserInfo");
+        const photoDiv = document.getElementById("selectedPhoto");
+        const noDataMsg = document.getElementById("noIndividualDataMessage");
+
+        if (!closer) {
+          infoDiv.style.display = "none";
+          noDataMsg.textContent =
+            "Dados não encontrados para este closer no período selecionado.";
+          noDataMsg.style.display = "block";
+          if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
+          return;
+        }
+        noDataMsg.style.display = "none";
+        infoDiv.style.display = "flex";
+
+        photoDiv.innerHTML = `<img src="${closer.imageUrl}" alt="Foto de ${closer.name}" />`;
+        document.getElementById("selectedName").textContent = closer.name;
+        document.getElementById("currentResult").textContent = formatCurrency(
+          closer.result
+        );
+        document.getElementById("salesCountValue").textContent =
+          closer.numberOfSales;
+        document.getElementById("averageTicketValue").textContent =
+          formatCurrency(closer.averageTicket);
+        document.getElementById("gaugeLabel").textContent =
+          "Performance Relativa";
+
+        const gaugeFillSvg = document.getElementById("gaugeFillSvg");
+        const gaugePercentageValue = document.getElementById(
+          "gaugePercentageValue"
+        );
+        const totalPathLength = 219.91;
+        const percentageNormalized = Math.min(closer.percentage, 100) / 100;
+        const strokeOffset = totalPathLength * (1 - percentageNormalized);
+        gaugeFillSvg.style.strokeDashoffset = totalPathLength;
+        requestAnimationFrame(() => {
+          gaugeFillSvg.style.strokeDashoffset = strokeOffset;
+        });
+        if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
+        let currentPerc = 0;
+        const targetPerc = closer.percentage;
+        gaugePercentageValue.textContent = `0%`;
+        if (targetPerc === 0 && closer.result === 0) {
+          gaugePercentageValue.textContent = `0%`;
+          gaugeFillSvg.style.strokeDashoffset = totalPathLength;
+        } else {
+          const duration = 1500;
+          const frameDuration = 20;
+          const totalFrames = duration / frameDuration;
+          const increment = targetPerc / totalFrames;
+          if (targetPerc === 0) {
+            gaugePercentageValue.textContent = `0%`;
+          } else {
+            gaugeCounterInterval = setInterval(() => {
+              currentPerc += increment;
+              if (currentPerc >= targetPerc) {
+                currentPerc = targetPerc;
+                clearInterval(gaugeCounterInterval);
+              }
+              gaugePercentageValue.textContent = `${Math.round(currentPerc)}%`;
+            }, frameDuration);
+          }
+        }
+      }
+
+      function clearIndividualView() {
+        document.getElementById("selectedCloserInfo").style.display = "none";
+        document.getElementById("noIndividualDataMessage").style.display =
+          "none";
+        document.getElementById("closerSelect").value = "";
+        if (gaugeCounterInterval) clearInterval(gaugeCounterInterval);
+        const gaugeFillSvg = document.getElementById("gaugeFillSvg");
+        const gaugePercentageValue = document.getElementById(
+          "gaugePercentageValue"
+        );
+        if (gaugeFillSvg) gaugeFillSvg.style.strokeDashoffset = 219.91;
+        if (gaugePercentageValue) gaugePercentageValue.textContent = `0%`;
+        document.getElementById("selectedPhoto").innerHTML = "";
+      }
+
+      function refreshDashboard() {
+        const filterValue = document.getElementById("dateFilter").value;
+        const currentProcessedData = getProcessedData(filterValue);
+        generatePodium(currentProcessedData);
+        generateRanking(currentProcessedData);
+        populateDropdown(currentProcessedData);
+        const selectedCloserId = document.getElementById("closerSelect").value;
+        if (
+          selectedCloserId &&
+          currentProcessedData.find((c) => c.closerId === selectedCloserId)
+        ) {
+          updateIndividualView(selectedCloserId, currentProcessedData);
+        } else {
+          clearIndividualView();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        populateDateFilter();
+        refreshDashboard();
+        document
+          .getElementById("dateFilter")
+          .addEventListener("change", refreshDashboard);
+        document
+          .getElementById("closerSelect")
+          .addEventListener("change", function () {
+            const selectedCloserId = this.value;
+            const filterValue = document.getElementById("dateFilter").value;
+            const currentProcessedData = getProcessedData(filterValue);
+            if (selectedCloserId) {
+              updateIndividualView(selectedCloserId, currentProcessedData);
+            } else {
+              clearIndividualView();
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
