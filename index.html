@@ -883,20 +883,18 @@
                     0%
                   </div>
                   <div id="gaugeLabel" class="gauge-label">
-                    Performance Relativa
+                    Em Relação ao Top 1
                   </div>
                 </div>
               </div>
               <div class="stats-grid">
                 <div class="stat-item">
                   <div id="currentResult" class="stat-value">R$ 0</div>
-                  <div class="stat-label">Resultado no Período</div>
+                  <div class="stat-label">Resultados</div>
                 </div>
                 <div class="stat-item">
                   <div id="salesCountValue" class="stat-value">0</div>
-                  <div id="salesCountLabel" class="stat-label">
-                    Nº de Vendas no Período
-                  </div>
+                  <div id="salesCountLabel" class="stat-label">Vendas</div>
                 </div>
                 <div class="stat-item">
                   <div id="averageTicketValue" class="stat-value">R$ 0</div>
@@ -930,7 +928,8 @@
           name: "Bruna Amorim",
           initials: "BA",
           targetSalesCount: 20,
-          imageUrl: "./images/ba.png",
+          imageUrl:
+            "https://i.postimg.cc/VvrvRv1Q/Whats-App-Image-2025-06-02-at-12-00-39.jpg",
         },
         bf: {
           name: "Bruna Ferreira",
@@ -957,13 +956,15 @@
           name: "Jorge Antonio Silveira",
           initials: "JA",
           targetSalesCount: 15,
-          imageUrl: "./images/jas.png",
+          imageUrl:
+            "https://i.postimg.cc/HspqGKRR/Captura-de-Tela-2025-06-02-a-s-11-53-01.png",
         },
         mc: {
           name: "Matheus Cardinal",
           initials: "MC",
           targetSalesCount: 15,
-          imageUrl: "./images/mc.png",
+          imageUrl:
+            "https://i.postimg.cc/GmMrSrpX/Captura-de-Tela-2025-06-02-a-s-11-51-43.png",
         },
         ya: {
           name: "Yvan Arruda",
@@ -976,85 +977,255 @@
 
       let rawSalesData = [
         // June 2025 (Current Month for simulation)
-        {
-          closerId: "cfn",
-          result: 30000,
-          numberOfSales: 5,
-          date: "2025-06-05",
-        },
-        {
-          closerId: "cfn",
-          result: 25000,
-          numberOfSales: 4,
-          date: "2025-06-15",
-        },
-        { closerId: "ba", result: 45000, numberOfSales: 6, date: "2025-06-03" },
-        { closerId: "bf", result: 32000, numberOfSales: 5, date: "2025-06-10" },
-        { closerId: "ri", result: 25000, numberOfSales: 3, date: "2025-06-08" },
+        { closerId: "cfn", result: 0, numberOfSales: 0, date: "2025-06-10" },
+
+        { closerId: "ba", result: 0, numberOfSales: 0, date: "2025-06-05" },
+
+        { closerId: "gm", result: 0, numberOfSales: 0, date: "2025-06-15" },
+
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-06-12" },
+
+        { closerId: "mc", result: 0, numberOfSales: 0, date: "2025-06-05" },
+        { closerId: "ya", result: 0, numberOfSales: 0, date: "2025-06-10" },
+
+        { closerId: "jas", result: 0, numberOfSales: 0, date: "2025-06-10" },
+
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-06-18" },
 
         // May 2025
         {
           closerId: "cfn",
-          result: 40000,
-          numberOfSales: 8,
+          result: 174184.12,
+          numberOfSales: 5,
           date: "2025-05-10",
         },
-        { closerId: "ba", result: 20000, numberOfSales: 4, date: "2025-05-05" },
-        { closerId: "ba", result: 22000, numberOfSales: 5, date: "2025-05-20" },
-        { closerId: "gm", result: 50000, numberOfSales: 7, date: "2025-05-15" },
-        { closerId: "bf", result: 28000, numberOfSales: 4, date: "2025-05-12" },
+        {
+          closerId: "ba",
+          result: 35000.0,
+          numberOfSales: 1,
+          date: "2025-05-05",
+        },
+        {
+          closerId: "gm",
+          result: 155200.0,
+          numberOfSales: 3,
+          date: "2025-05-15",
+        },
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-05-12" },
+        {
+          closerId: "mc",
+          result: 66000.0,
+          numberOfSales: 2,
+          date: "2025-05-05",
+        },
+        {
+          closerId: "ya",
+          result: 327201.27,
+          numberOfSales: 9,
+          date: "2025-05-10",
+        },
+        {
+          closerId: "jas",
+          result: 44000.0,
+          numberOfSales: 1,
+          date: "2025-05-10",
+        },
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-05-18" }, // ADDED 3rd for March
 
         // April 2025
         {
           closerId: "cfn",
-          result: 15000,
-          numberOfSales: 3,
-          date: "2025-04-20",
+          result: 66748.0,
+          numberOfSales: 2,
+          date: "2025-04-10",
         },
-        { closerId: "ri", result: 22000, numberOfSales: 3, date: "2025-04-18" },
-        { closerId: "ba", result: 9000, numberOfSales: 1, date: "2025-04-25" }, // ADDED 3rd for April
 
-        // March 2025
-        { closerId: "ya", result: 62000, numberOfSales: 9, date: "2025-03-10" },
-        { closerId: "mc", result: 30000, numberOfSales: 5, date: "2025-03-05" },
-        { closerId: "ri", result: 15000, numberOfSales: 2, date: "2025-03-18" }, // ADDED 3rd for March
+        { closerId: "ba", result: 0, numberOfSales: 0, date: "2025-04-05" },
 
-        // February 2025
-        { closerId: "mc", result: 38000, numberOfSales: 5, date: "2025-02-15" },
+        {
+          closerId: "gm",
+          result: 258053.25,
+          numberOfSales: 7,
+          date: "2025-04-15",
+        },
+
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-04-12" },
+
+        {
+          closerId: "mc",
+          result: 30000.0,
+          numberOfSales: 1,
+          date: "2025-04-05",
+        },
+        {
+          closerId: "ya",
+          result: 139930.0,
+          numberOfSales: 3,
+          date: "2025-04-10",
+        },
+
         {
           closerId: "jas",
-          result: 40000,
+          result: 50000.0,
+          numberOfSales: 1,
+          date: "2025-04-10",
+        },
+
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-04-18" },
+
+        // March 2025
+        {
+          closerId: "cfn",
+          result: 190295.72,
+          numberOfSales: 2,
+          date: "2025-03-10",
+        },
+
+        {
+          closerId: "ba",
+          result: 30000.0,
+          numberOfSales: 1,
+          date: "2025-03-05",
+        },
+
+        {
+          closerId: "gm",
+          result: 248230.0,
+          numberOfSales: 8,
+          date: "2025-03-15",
+        },
+
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-03-12" },
+
+        {
+          closerId: "mc",
+          result: 243711.0,
+          numberOfSales: 6,
+          date: "2025-03-05",
+        },
+
+        {
+          closerId: "ya",
+          result: 169435.0,
+          numberOfSales: 5,
+          date: "2025-03-10",
+        },
+
+        {
+          closerId: "jas",
+          result: 110000.0,
+          numberOfSales: 2,
+          date: "2025-03-10",
+        },
+
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-03-18" },
+        // ADDED 3rd for March
+
+        // February 2025
+        {
+          closerId: "cfn",
+          result: 243417.78,
           numberOfSales: 6,
           date: "2025-02-10",
         },
-        { closerId: "ya", result: 12000, numberOfSales: 2, date: "2025-02-20" }, // ADDED 3rd for February
+
+        {
+          closerId: "ba",
+          result: 31965.0,
+          numberOfSales: 1,
+          date: "2025-02-05",
+        },
+
+        {
+          closerId: "gm",
+          result: 98435.0,
+          numberOfSales: 3,
+          date: "2025-02-15",
+        },
+
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-02-12" },
+
+        {
+          closerId: "mc",
+          result: 114580.0,
+          numberOfSales: 4,
+          date: "2025-02-05",
+        },
+        {
+          closerId: "ya",
+          result: 278600.0,
+          numberOfSales: 7,
+          date: "2025-02-10",
+        },
+
+        {
+          closerId: "jas",
+          result: 135000.0,
+          numberOfSales: 1,
+          date: "2025-02-10",
+        },
+
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-02-18" },
+        // ADDED 3rd for February
 
         // January 2025
         {
-          closerId: "gm",
-          result: 60000,
-          numberOfSales: 12,
-          date: "2025-01-20",
+          closerId: "cfn",
+          result: 188632.75,
+          numberOfSales: 4,
+          date: "2025-01-10",
         },
+
         {
-          closerId: "jas",
-          result: 35000,
-          numberOfSales: 6,
+          closerId: "ba",
+          result: 108435.0,
+          numberOfSales: 3,
           date: "2025-01-05",
         },
-        { closerId: "bf", result: 10000, numberOfSales: 1, date: "2025-01-15" }, // ADDED 3rd for January
+
+        {
+          closerId: "gm",
+          result: 155200.0,
+          numberOfSales: 3,
+          date: "2025-01-15",
+        },
+
+        { closerId: "bf", result: 0, numberOfSales: 0, date: "2025-01-12" },
+
+        {
+          closerId: "mc",
+          result: 64000.0,
+          numberOfSales: 1,
+          date: "2025-01-05",
+        },
+        {
+          closerId: "ya",
+          result: 63435.0,
+          numberOfSales: 2,
+          date: "2025-01-10",
+        },
+
+        {
+          closerId: "jas",
+          result: 500000.0,
+          numberOfSales: 1,
+          date: "2025-01-10",
+        },
+
+        { closerId: "ri", result: 0, numberOfSales: 0, date: "2025-01-18" },
+        // ADDED 3rd for January
 
         // Older data
         {
           closerId: "cfn",
-          result: 100000,
-          numberOfSales: 15,
+          result: 0,
+          numberOfSales: 0,
           date: "2024-12-01",
         },
         {
           closerId: "ba",
-          result: 90000,
-          numberOfSales: 14,
+          result: 0,
+          numberOfSales: 0,
           date: "2024-11-01",
         },
       ];
@@ -1335,7 +1506,7 @@
         document.getElementById("averageTicketValue").textContent =
           formatCurrency(closer.averageTicket);
         document.getElementById("gaugeLabel").textContent =
-          "Performance Relativa";
+          "Em Relação ao Top 1";
 
         const gaugeFillSvg = document.getElementById("gaugeFillSvg");
         const gaugePercentageValue = document.getElementById(
